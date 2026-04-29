@@ -528,7 +528,7 @@ const Admin = () => {
                         <div className="menu-item-row">
                           {item.image ? (
                             <img 
-                              src={item.image.startsWith('/uploads') ? `http://localhost:5000${item.image}` : item.image} 
+                              src={item.image.startsWith('/uploads') ? `${BASE_URL}${item.image}` : item.image} 
                               alt={item.name} 
                               className="admin-menu-thumb" 
                               onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80'}

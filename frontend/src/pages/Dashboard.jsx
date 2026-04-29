@@ -165,7 +165,7 @@ const Dashboard = () => {
                 {favorites.length > 0 ? (
                   <div className="favorites-list">
                     {favorites.map(item => {
-                      const imageUrl = item.image?.startsWith('/uploads') ? `http://localhost:5000${item.image}` : (item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80');
+                      const imageUrl = item.image?.startsWith('/uploads') ? `${BASE_URL}${item.image}` : (item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80');
                       return (
                       <div key={item._id} className="favorite-item">
                         <img src={imageUrl} alt={item.name} onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80'} />
