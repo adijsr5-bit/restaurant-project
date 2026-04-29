@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   if (adminOnly && userStr) {
     try {
       const user = JSON.parse(userStr);
-      if (user.role !== 'admin') {
+      if (user.role?.toLowerCase() !== 'admin') {
         return <Navigate to="/" replace />;
       }
     } catch (e) {

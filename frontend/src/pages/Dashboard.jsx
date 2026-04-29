@@ -6,43 +6,33 @@ import './Dashboard.css';
 
 const Dashboard = () => {
   const [userData, setUserData] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
+    name: 'User',
+    email: 'Loading...',
+    role: 'user',
   });
   
   const [bookings, setBookings] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fallback demo data
-  const demoBookings = [
-    { _id: 'b1', date: '2026-05-02', time: '19:30', guests: 2, status: 'confirmed', table: 'T-12' },
-    { _id: 'b2', date: '2026-04-15', time: '20:00', guests: 4, status: 'completed', table: 'T-05' },
-  ];
-
-  const demoFavorites = [
-    { _id: '1', name: 'Truffle Mushroom Risotto', price: 24.99, image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=500&q=80' },
-    { _id: '4', name: 'Chocolate Lava Cake', price: 10.50, image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&q=80' },
-  ];
-
   useEffect(() => {
-    // In a real app, we'd fetch user data, bookings, and favorites
     const fetchDashboardData = async () => {
       try {
-        // Attempt to fetch from real API if available
-        // const bookingsRes = await api.get('/bookings/my-bookings');
-        // const favRes = await api.get('/users/favorites');
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          setUserData({ name: user.email.split('@')[0], email: user.email, role: user.role });
+        }
+
+        const bookingsRes = await api.get('/bookings/my-bookings');
+        setBookings(bookingsRes.data);
         
-        // Simulating API delay for demo
-        setTimeout(() => {
-          setBookings(demoBookings);
-          setFavorites(demoFavorites);
-          setLoading(false);
-        }, 800);
+        setFavorites([]); // Favorites not implemented yet in backend
+        setLoading(false);
       } catch (error) {
-        console.warn("Using demo data for dashboard");
-        setBookings(demoBookings);
-        setFavorites(demoFavorites);
+        console.warn("Failed to fetch dashboard data", error);
+        setBookings([]);
+        setFavorites([]);
         setLoading(false);
       }
     };
@@ -52,6 +42,12 @@ const Dashboard = () => {
 
   const upcomingBookings = bookings.filter(b => b.status === 'confirmed' || b.status === 'pending');
   const pastBookings = bookings.filter(b => b.status === 'completed' || b.status === 'cancelled');
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
 
   return (
     <div className="dashboard-container container">
@@ -85,7 +81,16 @@ const Dashboard = () => {
                 <span className="stat-label">Loyalty Pts</span>
               </div>
             </div>
-            <button className="btn-outline full-width mt-4" style={{display: 'flex', justifyContent: 'center'}}>
+            {userData.role?.toLowerCase() === 'admin' && (
+              <button 
+                className="btn-primary full-width mt-4" 
+                style={{display: 'flex', justifyContent: 'center', marginBottom: '10px'}} 
+                onClick={() => window.location.href = '/admin'}
+              >
+                Go to Admin Dashboard
+              </button>
+            )}
+            <button className="btn-outline full-width mt-4" style={{display: 'flex', justifyContent: 'center'}} onClick={handleLogout}>
               <LogOut size={18} /> Logout
             </button>
           </motion.div>
@@ -110,10 +115,10 @@ const Dashboard = () => {
                       </div>
                       <div className="booking-details">
                         <p className="booking-time"><Clock size={14}/> {booking.time}</p>
-                        <p className="booking-meta">Table {booking.table} • {booking.guests} Guests</p>
+                        <p className="booking-meta">{booking.guests} Guests</p>
                       </div>
                       <div className="booking-actions">
-                        <span className="status-badge confirmed">Confirmed</span>
+                        <span className={`status-badge ${booking.status}`}>{booking.status}</span>
                       </div>
                     </div>
                   ))}

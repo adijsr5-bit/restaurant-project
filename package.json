@@ -15,5 +15,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "scripts": {
+    "start": "cd backend && node index.js",
+    "build": "cd backend && npm install"
   }
 }

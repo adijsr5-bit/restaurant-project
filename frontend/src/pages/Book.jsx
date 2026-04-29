@@ -23,7 +23,16 @@ const Book = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/bookings', bookingData);
+      const payload = { ...bookingData };
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          payload.user = user._id;
+          if (!payload.email) payload.email = user.email;
+        } catch (e) {}
+      }
+      await api.post('/bookings', payload);
       setBookingConfirmed(true);
     } catch (error) {
       console.error(error);

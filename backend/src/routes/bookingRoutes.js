@@ -13,6 +13,16 @@ router.get('/', protect, admin, async (req, res) => {
   }
 });
 
+// Get logged in user's bookings
+router.get('/my-bookings', protect, async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Create a booking
 router.post('/', async (req, res) => {
   try {

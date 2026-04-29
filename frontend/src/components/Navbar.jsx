@@ -22,6 +22,7 @@ const Navbar = () => {
 
   const isHome = location.pathname === '/';
   const navClass = scrolled || !isHome ? 'navbar solid' : 'navbar transparent';
+  const isLoggedIn = !!localStorage.getItem('token');
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -44,7 +45,11 @@ const Navbar = () => {
             <li><Link to="/menu">Menu</Link></li>
             <li><Link to="/book">Reservations</Link></li>
             <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/admin" className="nav-admin-link">Admin</Link></li>
+            {isLoggedIn ? (
+              <li><Link to="/dashboard" className="nav-admin-link">Profile</Link></li>
+            ) : (
+              <li><Link to="/login" className="nav-admin-link">Login</Link></li>
+            )}
           </ul>
           
           <div className="nav-actions">
@@ -73,7 +78,11 @@ const Navbar = () => {
           <li><Link to="/menu" onClick={() => setMobileMenuOpen(false)}>Menu</Link></li>
           <li><Link to="/book" onClick={() => setMobileMenuOpen(false)}>Reservations</Link></li>
           <li><Link to="/contact" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
-          <li><Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="nav-admin-link">Admin</Link></li>
+          {isLoggedIn ? (
+            <li><Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="nav-admin-link">Profile</Link></li>
+          ) : (
+            <li><Link to="/login" onClick={() => setMobileMenuOpen(false)} className="nav-admin-link">Login</Link></li>
+          )}
         </ul>
       </div>
     </nav>

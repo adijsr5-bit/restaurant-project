@@ -29,13 +29,13 @@ router.get('/', async (req, res) => {
 // Upload a new home image
 router.post('/', protect, admin, upload.single('image'), async (req, res) => {
   try {
-    const { title, subtitle } = req.body;
+    const { title, subtitle, section } = req.body;
     if (!req.file) {
       return res.status(400).json({ message: 'No image uploaded' });
     }
     
     const imageUrl = `/uploads/${req.file.filename}`;
-    const newImage = await HomeImage.create({ imageUrl, title, subtitle });
+    const newImage = await HomeImage.create({ imageUrl, title, subtitle, section: section || 'gallery' });
     res.status(201).json(newImage);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

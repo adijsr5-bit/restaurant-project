@@ -21,21 +21,31 @@ const Home = () => {
     fetchImages();
   }, []);
 
-  const galleryImages = [
+  const galleryImagesFallback = [
     'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=2070&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=2070&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1974&auto=format&fit=crop',
   ];
 
-  const defaultHero = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop';
-  const getHeroUrl = () => {
-    if (heroImages.length > 0) {
-      const img = heroImages[0].imageUrl;
-      return img.startsWith('/uploads') ? `${BASE_URL}${img}` : img;
+  const getImageUrlBySection = (sectionName, fallback) => {
+    const imgObj = heroImages.find(img => img.section === sectionName);
+    if (imgObj) {
+      return imgObj.imageUrl.startsWith('/uploads') ? `${BASE_URL}${imgObj.imageUrl}` : imgObj.imageUrl;
     }
-    return defaultHero;
+    return fallback;
   };
+
+  const getHeroUrl = () => getImageUrlBySection('hero', 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop');
+  const getStoryUrl = () => getImageUrlBySection('about', 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?q=80&w=2070&auto=format&fit=crop');
+  const getSig1Url = () => getImageUrlBySection('signature1', 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop');
+  const getSig2Url = () => getImageUrlBySection('signature2', 'https://images.unsplash.com/photo-1599084942208-9a3b615c00a6?q=80&w=2067&auto=format&fit=crop');
+  const getSig3Url = () => getImageUrlBySection('signature3', 'https://images.unsplash.com/photo-1582878826629-29b7ad1cb438?q=80&w=1974&auto=format&fit=crop');
+  
+  const galleryImagesData = heroImages.filter(img => img.section === 'gallery' || !img.section);
+  const galleryImages = galleryImagesData.length > 0 
+    ? galleryImagesData.map(img => img.imageUrl.startsWith('/uploads') ? `${BASE_URL}${img.imageUrl}` : img.imageUrl) 
+    : galleryImagesFallback;
 
   return (
     <div className="home-container">
@@ -98,7 +108,7 @@ const Home = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
           >
-            <img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?q=80&w=2070&auto=format&fit=crop" alt="Chef preparing food" />
+            <img src={getStoryUrl()} alt="Chef preparing food" />
           </motion.div>
         </div>
       </section>
@@ -116,17 +126,17 @@ const Home = () => {
           </div>
           <div className="signature-grid">
             <div className="sig-item">
-              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop" alt="Herb Crusted Lamb" />
+              <img src={getSig1Url()} alt="Signature Dish 1" />
               <h3>Herb Crusted Lamb</h3>
               <p>Served with seasonal root vegetables and a rosemary reduction.</p>
             </div>
             <div className="sig-item">
-              <img src="https://images.unsplash.com/photo-1599084942208-9a3b615c00a6?q=80&w=2067&auto=format&fit=crop" alt="Seared Scallops" />
+              <img src={getSig2Url()} alt="Signature Dish 2" />
               <h3>Seared Scallops</h3>
               <p>Pan-seared to perfection over a bed of cauliflower purée.</p>
             </div>
             <div className="sig-item">
-              <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cb438?q=80&w=1974&auto=format&fit=crop" alt="Truffle Linguine" />
+              <img src={getSig3Url()} alt="Signature Dish 3" />
               <h3>Truffle Linguine</h3>
               <p>Handmade pasta tossed in a rich black truffle cream sauce.</p>
             </div>

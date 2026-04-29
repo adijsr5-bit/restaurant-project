@@ -25,6 +25,7 @@ const Admin = () => {
     description: '',
     dietary: 'non-veg'
   });
+  const [editMenuId, setEditMenuId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -32,7 +33,7 @@ const Admin = () => {
 
   // Home Images Form State
   const [showHomeImageForm, setShowHomeImageForm] = useState(false);
-  const [homeImageForm, setHomeImageForm] = useState({ title: '', subtitle: '' });
+  const [homeImageForm, setHomeImageForm] = useState({ title: '', subtitle: '', section: 'hero' });
   const [selectedHomeImage, setSelectedHomeImage] = useState(null);
   const [homeImagePreview, setHomeImagePreview] = useState(null);
   const homeImageFileInputRef = useRef(null);
@@ -123,20 +124,44 @@ const Admin = () => {
     }
 
     try {
-      const res = await api.post('/menu', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setMenuItems([res.data, ...menuItems]);
+      let res;
+      if (editMenuId) {
+        res = await api.put(`/menu/${editMenuId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setMenuItems(menuItems.map(item => item._id === editMenuId ? res.data : item));
+        alert('Menu item updated successfully!');
+      } else {
+        res = await api.post('/menu', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setMenuItems([res.data, ...menuItems]);
+        alert('Menu item added successfully!');
+      }
+      
       setShowMenuForm(false);
       setMenuForm({ name: '', price: '', category: 'Main Course', description: '', dietary: 'non-veg' });
       setSelectedImage(null);
       setImagePreview(null);
-      alert('Menu item added successfully!');
+      setEditMenuId(null);
     } catch (error) {
-      alert("Failed to add menu item. Ensure you are logged in.");
+      alert("Failed to save menu item. Ensure you are logged in.");
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleEditMenuItem = (item) => {
+    setMenuForm({
+      name: item.name,
+      price: item.price,
+      category: item.category,
+      description: item.description,
+      dietary: item.dietary || 'non-veg'
+    });
+    setEditMenuId(item._id);
+    setImagePreview(item.image ? (item.image.startsWith('/uploads') ? `${BASE_URL}${item.image}` : item.image) : null);
+    setShowMenuForm(true);
   };
 
   const handleDeleteMenuItem = async (id) => {
@@ -167,6 +192,7 @@ const Admin = () => {
     const formData = new FormData();
     formData.append('title', homeImageForm.title);
     formData.append('subtitle', homeImageForm.subtitle);
+    formData.append('section', homeImageForm.section);
     formData.append('image', selectedHomeImage);
 
     try {
@@ -175,7 +201,7 @@ const Admin = () => {
       });
       setHomeImages([res.data, ...homeImages]);
       setShowHomeImageForm(false);
-      setHomeImageForm({ title: '', subtitle: '' });
+      setHomeImageForm({ title: '', subtitle: '', section: 'hero' });
       setSelectedHomeImage(null);
       setHomeImagePreview(null);
       alert('Home image added successfully');
@@ -228,6 +254,12 @@ const Admin = () => {
             <Utensils size={18} /> Menu Management
           </button>
           <button 
+            className={`admin-nav-item ${activeTab === 'home-images' ? 'active' : ''}`}
+            onClick={() => setActiveTab('home-images')}
+          >
+            <ImageIcon size={18} /> Home Slider Images
+          </button>
+          <button 
             className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -238,9 +270,55 @@ const Admin = () => {
 
       <div className="admin-main">
         {/* ORDERS TAB */}
-        {activeTab === 'orders' && (
+        {activeTab === 'orders' && (() => {
+          const now = new Date();
+          let daily = 0, monthly = 0, yearly = 0, accepted = 0, cancelled = 0;
+          orders.forEach(o => {
+            if (['preparing', 'ready', 'served', 'completed'].includes(o.status)) {
+              accepted++;
+              const amt = o.totalAmount || 0;
+              const oDate = new Date(o.createdAt || new Date());
+              if (oDate.getFullYear() === now.getFullYear()) {
+                yearly += amt;
+                if (oDate.getMonth() === now.getMonth()) {
+                  monthly += amt;
+                  if (oDate.getDate() === now.getDate()) { daily += amt; }
+                }
+              }
+            } else if (o.status === 'cancelled') {
+              cancelled++;
+            }
+          });
+
+          return (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-panel-card">
             <div className="admin-panel-header">
+              <h2>Order & Earning Statistics</h2>
+            </div>
+            <div className="profile-stats mb-4" style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+              <div className="stat glass-panel" style={{flex: 1, minWidth: '150px'}}>
+                <span className="stat-num text-primary">${daily.toFixed(2)}</span>
+                <span className="stat-label">Daily Earning</span>
+              </div>
+              <div className="stat glass-panel" style={{flex: 1, minWidth: '150px'}}>
+                <span className="stat-num text-primary">${monthly.toFixed(2)}</span>
+                <span className="stat-label">Monthly Earning</span>
+              </div>
+              <div className="stat glass-panel" style={{flex: 1, minWidth: '150px'}}>
+                <span className="stat-num text-primary">${yearly.toFixed(2)}</span>
+                <span className="stat-label">Yearly Earning</span>
+              </div>
+              <div className="stat glass-panel" style={{flex: 1, minWidth: '120px'}}>
+                <span className="stat-num text-success">{accepted}</span>
+                <span className="stat-label">Accepted</span>
+              </div>
+              <div className="stat glass-panel" style={{flex: 1, minWidth: '120px'}}>
+                <span className="stat-num text-red">{cancelled}</span>
+                <span className="stat-label">Cancelled</span>
+              </div>
+            </div>
+
+            <div className="admin-panel-header mt-4">
               <h2>Recent Orders</h2>
             </div>
             <div className="admin-table-wrapper">
@@ -260,18 +338,34 @@ const Admin = () => {
                     <tr key={order._id}>
                       <td className="text-muted">#{order._id.substring(order._id.length - 6)}</td>
                       <td className="font-medium">Guest</td>
-                      <td>{order.orderType || 'Walk-in'}</td>
+                      <td>
+                        <span style={{textTransform: 'capitalize'}}>{order.orderType || 'Walk-in'}</span>
+                        {order.orderType === 'dine-in' && order.tableNumber && (
+                          <div className="text-muted text-sm">Table {order.tableNumber}</div>
+                        )}
+                      </td>
                       <td className="text-primary font-bold">${order.totalAmount?.toFixed(2)}</td>
                       <td>
                         <span className={`admin-badge ${order.status}`}>{order.status}</span>
                       </td>
                       <td>
-                        {order.status === 'pending' ? (
+                        {order.status === 'pending' && (
                           <div className="action-row">
-                            <button onClick={() => updateOrderStatus(order._id, 'confirmed')} className="btn-action accept"><CheckCircle size={16}/> Prepare</button>
+                            <button onClick={() => updateOrderStatus(order._id, 'preparing')} className="btn-action accept"><CheckCircle size={16}/> Prepare</button>
                             <button onClick={() => updateOrderStatus(order._id, 'cancelled')} className="btn-action reject"><XCircle size={16}/> Cancel</button>
                           </div>
-                        ) : (
+                        )}
+                        {order.status === 'preparing' && (
+                          <div className="action-row">
+                            <button onClick={() => updateOrderStatus(order._id, 'ready')} className="btn-action accept" style={{backgroundColor: '#eab308', borderColor: '#eab308'}}><CheckCircle size={16}/> Mark Ready</button>
+                          </div>
+                        )}
+                        {order.status === 'ready' && (
+                          <div className="action-row">
+                            <button onClick={() => updateOrderStatus(order._id, 'completed')} className="btn-action accept"><CheckCircle size={16}/> Complete</button>
+                          </div>
+                        )}
+                        {(order.status === 'completed' || order.status === 'cancelled' || order.status === 'served') && (
                           <span className="text-muted text-sm capitalize">{order.status}</span>
                         )}
                       </td>
@@ -284,7 +378,7 @@ const Admin = () => {
               </table>
             </div>
           </motion.div>
-        )}
+        )})()}
 
         {/* BOOKINGS TAB */}
         {activeTab === 'bookings' && (
@@ -335,14 +429,23 @@ const Admin = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-panel-card">
             <div className="admin-panel-header flex-between">
               <h2>Menu Items</h2>
-              <button className="btn-admin-primary" onClick={() => setShowMenuForm(!showMenuForm)}>
+              <button className="btn-admin-primary" onClick={() => {
+                if(showMenuForm) {
+                  setShowMenuForm(false);
+                  setEditMenuId(null);
+                  setMenuForm({ name: '', price: '', category: 'Main Course', description: '', dietary: 'non-veg' });
+                  setImagePreview(null);
+                } else {
+                  setShowMenuForm(true);
+                }
+              }}>
                 {showMenuForm ? 'Cancel' : '+ Add New Dish'}
               </button>
             </div>
 
             {showMenuForm && (
               <div className="admin-form-card">
-                <h3>Add New Dish</h3>
+                <h3>{editMenuId ? 'Edit Dish' : 'Add New Dish'}</h3>
                 <form onSubmit={handleMenuSubmit} className="admin-grid-form">
                   <div className="form-col">
                     <div className="admin-form-group">
@@ -440,8 +543,8 @@ const Admin = () => {
                       <td className="text-primary font-bold">${item.price.toFixed(2)}</td>
                       <td>
                         <div className="action-row">
-                          <button className="btn-icon-soft text-blue"><Edit size={16}/></button>
-                          <button className="btn-icon-soft text-red"><Trash2 size={16}/></button>
+                          <button className="btn-icon-soft text-blue" onClick={() => handleEditMenuItem(item)}><Edit size={16}/></button>
+                          <button className="btn-icon-soft text-red" onClick={() => handleDeleteMenuItem(item._id)}><Trash2 size={16}/></button>
                         </div>
                       </td>
                     </tr>
@@ -506,6 +609,17 @@ const Admin = () => {
                       <label>Subtitle (Optional)</label>
                       <input type="text" className="admin-input" value={homeImageForm.subtitle} onChange={(e) => setHomeImageForm({...homeImageForm, subtitle: e.target.value})} />
                     </div>
+                    <div className="admin-form-group">
+                      <label>Target Section</label>
+                      <select className="admin-input" value={homeImageForm.section} onChange={(e) => setHomeImageForm({...homeImageForm, section: e.target.value})}>
+                        <option value="hero">Main Hero Background</option>
+                        <option value="about">Our Story Section</option>
+                        <option value="signature1">Signature Dish 1</option>
+                        <option value="signature2">Signature Dish 2</option>
+                        <option value="signature3">Signature Dish 3</option>
+                        <option value="gallery">Gallery Photo</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="form-col upload-col">
@@ -545,6 +659,7 @@ const Admin = () => {
                 <thead>
                   <tr>
                     <th>Preview</th>
+                    <th>Section</th>
                     <th>Title</th>
                     <th>Uploaded On</th>
                     <th>Actions</th>
@@ -559,6 +674,9 @@ const Admin = () => {
                           alt="Hero" 
                           className="admin-menu-thumb" 
                         />
+                      </td>
+                      <td>
+                        <span className="admin-badge confirmed" style={{textTransform: 'capitalize'}}>{img.section || 'Gallery'}</span>
                       </td>
                       <td>{img.title || <span className="text-muted">No Title</span>}</td>
                       <td>{new Date(img.createdAt).toLocaleDateString()}</td>
