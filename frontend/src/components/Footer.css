@@ -1,0 +1,46 @@
+.main-footer {
+  background-color: var(--bg-color); /* Light background */
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.footer-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  color: var(--text-color);
+  letter-spacing: 2px;
+}
+
+.footer-logo {
+  height: 60px;
+}
+
+.footer-info p {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+  margin: 5px 0;
+}
+
+.footer-copyright {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--card-border);
+  width: 100%;
+  max-width: 400px;
+}
+
+.footer-copyright p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

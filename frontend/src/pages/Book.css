@@ -1,0 +1,130 @@
+.book-page-container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.book-page-header {
+  height: 50vh;
+  min-height: 400px;
+  background-image: url('https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.book-page-header .overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Reservation Wrapper */
+.reservation-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  padding: 60px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.form-row {
+  display: flex;
+  gap: 40px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.luxury-input {
+  font-size: 1.1rem;
+  padding: 10px 0;
+  color: var(--text-muted);
+}
+
+.form-submit {
+  margin-top: 20px;
+}
+
+.form-submit .btn-primary {
+  padding: 15px 40px;
+  font-size: 0.9rem;
+}
+
+/* Success State */
+.success-state {
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-state h2 {
+  font-size: 2.5rem;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.success-state p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+
+.booking-summary {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 30px;
+  text-align: left;
+  border-left: 3px solid var(--primary-color);
+}
+
+.booking-summary p {
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.booking-summary p:last-child {
+  margin-bottom: 0;
+}
+
+.booking-summary strong {
+  display: inline-block;
+  width: 100px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reservation-wrapper {
+    padding: 30px 20px;
+  }
+  .form-row {
+    flex-direction: column;
+    gap: 30px;
+  }
+}

@@ -1,0 +1,215 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.5s ease;
+}
+
+.navbar.transparent {
+  background: transparent;
+  padding: 30px 0;
+}
+
+.navbar.solid {
+  background: var(--card-bg);
+  padding: 15px 0;
+  box-shadow: var(--shadow-subtle);
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo {
+  text-decoration: none;
+  z-index: 1002; /* Above mobile menu */
+  position: relative;
+}
+
+.text-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-color);
+  transition: color 0.5s ease;
+}
+
+.navbar.transparent .text-logo {
+  color: #ffffff; /* White text on hero image */
+}
+
+.logo-img {
+  height: 45px;
+}
+
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 40px;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar.transparent .nav-links a {
+  color: #ffffff;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+
+.navbar.transparent .nav-links a:hover {
+  color: #e0e0e0;
+}
+
+.navbar.transparent .nav-links a:hover::after {
+  background-color: #ffffff;
+}
+
+.nav-admin-link {
+  font-size: 0.7rem !important;
+  opacity: 0.6;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+}
+
+.cart-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+}
+
+.navbar.transparent .cart-btn {
+  color: #fff;
+}
+
+.cart-btn:hover {
+  color: var(--primary-color);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--primary-color);
+  color: white;
+  font-size: 0.7rem;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  gap: 15px;
+  z-index: 1002;
+}
+
+.hamburger, .cart-btn-mobile {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  position: relative;
+}
+
+.navbar.transparent .hamburger, .navbar.transparent .cart-btn-mobile {
+  color: #fff;
+}
+
+/* Mobile Slide Menu */
+.mobile-slide-menu {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100vh;
+  background: var(--bg-color);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(100%);
+  transition: transform 0.4s ease-in-out;
+}
+
+.mobile-slide-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-links {
+  list-style: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.mobile-links a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--text-color);
+  text-decoration: none;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  .navbar.transparent.solid {
+    /* If mobile menu open, we might want solid bg, but handled by menu overlay */
+  }
+}

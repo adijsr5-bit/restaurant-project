@@ -1,0 +1,43 @@
+import React, { createContext, useState, useEffect } from 'react';
+import api from '../services/api';
+
+export const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const defaultSettings = {
+    restaurantName: 'AdityaDine',
+    logoUrl: '',
+    themeColor: '#7b8c5a', // Luxury Olive Green
+    address: '123 Tech Park, Innovation City',
+    contactEmail: 'contact@adityadine.com',
+    contactPhone: '+1 (555) 123-4567',
+  };
+
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await api.get('/settings');
+        if (res.data) {
+          setSettings(res.data);
+          // Dynamically update CSS variables
+          document.documentElement.style.setProperty('--primary-color', res.data.themeColor);
+          document.title = res.data.restaurantName;
+        }
+      } catch (error) {
+        console.warn('Backend unavailable. Using default theme settings for demo.');
+        setSettings(defaultSettings);
+        document.documentElement.style.setProperty('--primary-color', defaultSettings.themeColor);
+        document.title = defaultSettings.restaurantName;
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  return (
+    <ThemeContext.Provider value={{ settings, setSettings }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
