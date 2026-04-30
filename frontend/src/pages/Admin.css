@@ -475,13 +475,76 @@
     align-items: flex-start;
   }
 
-  .profile-stats {
-    gap: 10px !important;
+  .admin-table-wrapper {
+    overflow-x: visible; /* Remove horizontal scroll */
   }
 
-  .stat {
-    min-width: 100% !important; /* Stack stats on very small screens, or 48% if preferred */
-    margin-bottom: 5px;
+  /* Convert Tables to Cards on Mobile */
+  .admin-clean-table, 
+  .admin-clean-table tbody, 
+  .admin-clean-table tr, 
+  .admin-clean-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-clean-table thead {
+    display: none; /* Hide table headers */
+  }
+
+  .admin-clean-table tr {
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .admin-clean-table td {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 10px 0;
+    text-align: right; /* Content on right */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .admin-clean-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* Insert Label from data-label attribute */
+  .admin-clean-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .action-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  /* Ensure long message td wraps properly instead of flex row */
+  .admin-clean-table td.message-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .admin-clean-table td.message-cell::before {
+    margin-bottom: 6px;
+  }
+  .admin-clean-table td.message-cell div {
+    max-height: none !important; /* expand on mobile */
   }
 }
 

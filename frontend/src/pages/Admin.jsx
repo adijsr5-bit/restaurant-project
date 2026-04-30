@@ -348,19 +348,19 @@ const Admin = () => {
                 <tbody>
                   {orders.map(order => (
                     <tr key={order._id}>
-                      <td className="text-muted">#{order._id.substring(order._id.length - 6)}</td>
-                      <td className="font-medium">Guest</td>
-                      <td>
+                      <td data-label="Order ID" className="text-muted">#{order._id.substring(order._id.length - 6)}</td>
+                      <td data-label="Customer" className="font-medium">Guest</td>
+                      <td data-label="Type">
                         <span style={{textTransform: 'capitalize'}}>{order.orderType || 'Walk-in'}</span>
                         {order.orderType === 'dine-in' && order.tableNumber && (
                           <div className="text-muted text-sm">Table {order.tableNumber}</div>
                         )}
                       </td>
-                      <td className="text-primary font-bold">${order.totalAmount?.toFixed(2)}</td>
-                      <td>
+                      <td data-label="Total" className="text-primary font-bold">${order.totalAmount?.toFixed(2)}</td>
+                      <td data-label="Status">
                         <span className={`admin-badge ${order.status}`}>{order.status}</span>
                       </td>
-                      <td>
+                      <td data-label="Actions">
                         {order.status === 'pending' && (
                           <div className="action-row">
                             <button onClick={() => updateOrderStatus(order._id, 'preparing')} className="btn-action accept"><CheckCircle size={16}/> Prepare</button>
@@ -412,13 +412,13 @@ const Admin = () => {
                 <tbody>
                   {bookings.map(booking => (
                     <tr key={booking._id}>
-                      <td className="font-medium">{booking.name}</td>
-                      <td>{booking.date} at {booking.time}</td>
-                      <td>{booking.guests}</td>
-                      <td>
+                      <td data-label="Customer" className="font-medium">{booking.name}</td>
+                      <td data-label="Date / Time">{booking.date} at {booking.time}</td>
+                      <td data-label="Guests">{booking.guests}</td>
+                      <td data-label="Status">
                         <span className={`admin-badge ${booking.status}`}>{booking.status}</span>
                       </td>
-                      <td>
+                      <td data-label="Actions">
                         {booking.status === 'pending' ? (
                           <div className="action-row">
                             <button onClick={() => updateBookingStatus(booking._id, 'confirmed')} className="btn-action accept"><CheckCircle size={16}/> Accept</button>
@@ -536,7 +536,7 @@ const Admin = () => {
                 <tbody>
                   {menuItems.map(item => (
                     <tr key={item._id}>
-                      <td>
+                      <td data-label="Dish">
                         <div className="menu-item-row">
                           {item.image ? (
                             <img 
@@ -551,9 +551,9 @@ const Admin = () => {
                           <span className="font-medium">{item.name}</span>
                         </div>
                       </td>
-                      <td>{item.category}</td>
-                      <td className="text-primary font-bold">${item.price.toFixed(2)}</td>
-                      <td>
+                      <td data-label="Category">{item.category}</td>
+                      <td data-label="Price" className="text-primary font-bold">${item.price.toFixed(2)}</td>
+                      <td data-label="Actions">
                         <div className="action-row">
                           <button className="btn-icon-soft text-blue" onClick={() => handleEditMenuItem(item)}><Edit size={16}/></button>
                           <button className="btn-icon-soft text-red" onClick={() => handleDeleteMenuItem(item._id)}><Trash2 size={16}/></button>
@@ -680,19 +680,19 @@ const Admin = () => {
                 <tbody>
                   {homeImages.map(img => (
                     <tr key={img._id}>
-                      <td>
+                      <td data-label="Preview">
                         <img 
                           src={img.imageUrl.startsWith('/uploads') ? `${BASE_URL}${img.imageUrl}` : img.imageUrl} 
                           alt="Hero" 
                           className="admin-menu-thumb" 
                         />
                       </td>
-                      <td>
+                      <td data-label="Section">
                         <span className="admin-badge confirmed" style={{textTransform: 'capitalize'}}>{img.section || 'Gallery'}</span>
                       </td>
-                      <td>{img.title || <span className="text-muted">No Title</span>}</td>
-                      <td>{new Date(img.createdAt).toLocaleDateString()}</td>
-                      <td>
+                      <td data-label="Title">{img.title || <span className="text-muted">No Title</span>}</td>
+                      <td data-label="Uploaded On">{new Date(img.createdAt).toLocaleDateString()}</td>
+                      <td data-label="Actions">
                         <button className="btn-icon-soft text-red" onClick={() => handleDeleteHomeImage(img._id)}>
                           <Trash2 size={16}/>
                         </button>
@@ -726,10 +726,10 @@ const Admin = () => {
                 <tbody>
                   {messages.map(msg => (
                     <tr key={msg._id} style={{ fontWeight: msg.read ? 'normal' : 'bold' }}>
-                      <td>{new Date(msg.createdAt).toLocaleDateString()}</td>
-                      <td>{msg.name}</td>
-                      <td><a href={`mailto:${msg.email}`} className="text-primary">{msg.email}</a></td>
-                      <td style={{ maxWidth: '300px' }}>
+                      <td data-label="Date">{new Date(msg.createdAt).toLocaleDateString()}</td>
+                      <td data-label="Name">{msg.name}</td>
+                      <td data-label="Email"><a href={`mailto:${msg.email}`} className="text-primary">{msg.email}</a></td>
+                      <td data-label="Message" className="message-cell" style={{ maxWidth: '300px' }}>
                         <div style={{ 
                           maxHeight: '100px', 
                           overflowY: 'auto', 
@@ -740,7 +740,7 @@ const Admin = () => {
                           {msg.message}
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Status">
                         {!msg.read ? (
                           <button 
                             className="btn-action accept" 
