@@ -729,7 +729,17 @@ const Admin = () => {
                       <td>{new Date(msg.createdAt).toLocaleDateString()}</td>
                       <td>{msg.name}</td>
                       <td><a href={`mailto:${msg.email}`} className="text-primary">{msg.email}</a></td>
-                      <td style={{ maxWidth: '300px', whiteSpace: 'pre-wrap' }}>{msg.message}</td>
+                      <td style={{ maxWidth: '300px' }}>
+                        <div style={{ 
+                          maxHeight: '100px', 
+                          overflowY: 'auto', 
+                          whiteSpace: 'pre-wrap', 
+                          wordBreak: 'break-word',
+                          paddingRight: '5px'
+                        }}>
+                          {msg.message}
+                        </div>
+                      </td>
                       <td>
                         {!msg.read ? (
                           <button 
