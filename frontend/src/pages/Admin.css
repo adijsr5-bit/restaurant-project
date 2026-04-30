@@ -393,32 +393,52 @@
 @media (max-width: 900px) {
   .admin-wrapper {
     flex-direction: column;
+    padding-top: 60px; /* Reduced for smaller navbars */
   }
   
   .admin-sidebar {
     width: 100%;
     height: auto;
-    position: static;
+    position: sticky;
+    top: 60px;
+    z-index: 10;
     border-right: none;
     border-bottom: 1px solid #e2e8f0;
-    padding: 10px 0;
+    padding: 10px 0 0;
+    background: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-brand {
+    padding: 0 16px 12px;
+    margin-bottom: 0;
+    border-bottom: none;
   }
   
   .admin-main {
     margin-left: 0;
-    padding: 16px;
+    padding: 12px;
   }
   
   .admin-nav {
     flex-direction: row;
     overflow-x: auto;
-    padding: 0 16px;
+    padding: 0 12px;
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .admin-nav::-webkit-scrollbar {
+    display: none;
   }
   
   .admin-nav-item {
     white-space: nowrap;
     border-left: none;
     border-bottom: 3px solid transparent;
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
   
   .admin-nav-item.active {
@@ -426,7 +446,48 @@
     border-bottom-color: var(--primary-color, #7b8c5a);
   }
   
-  .admin-grid-form {
+  .admin-grid-form, .admin-form-row {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .admin-panel-card {
+    padding: 16px;
+  }
+
+  .admin-panel-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .admin-clean-table th, .admin-clean-table td {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .btn-action {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .action-row {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .profile-stats {
+    gap: 10px !important;
+  }
+
+  .stat {
+    min-width: 100% !important; /* Stack stats on very small screens, or 48% if preferred */
+    margin-bottom: 5px;
   }
 }
+
+@media (min-width: 480px) and (max-width: 900px) {
+  .stat {
+    min-width: calc(50% - 10px) !important;
+  }
+}
+
