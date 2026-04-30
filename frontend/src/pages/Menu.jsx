@@ -11,13 +11,7 @@ const Menu = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const { addToCart } = useContext(CartContext);
 
-  // Dummy data as fallback
-  const dummyData = [
-    { _id: '1', name: 'Truffle Mushroom Risotto', description: 'Creamy arborio rice with black truffle paste and parmesan', price: 24.00, category: 'Main Course', dietary: 'veg', image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=500&q=80', rating: 4.8 },
-    { _id: '2', name: 'Pan-Seared Salmon', description: 'Fresh salmon fillet with garlic butter sauce and asparagus', price: 28.50, category: 'Main Course', dietary: 'non-veg', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&q=80', rating: 4.9 },
-    { _id: '3', name: 'Bruschetta al Pomodoro', description: 'Toasted bread topped with fresh tomatoes, basil, and olive oil', price: 12.00, category: 'Starters', dietary: 'veg', image: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=500&q=80', rating: 4.5 },
-    { _id: '4', name: 'Chocolate Lava Cake', description: 'Warm chocolate cake with a gooey molten center, served with vanilla bean ice cream', price: 14.00, category: 'Desserts', dietary: 'veg', image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&q=80', rating: 4.9 },
-  ];
+
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -26,10 +20,10 @@ const Menu = () => {
         if (res.data && res.data.length > 0) {
           setMenuItems(res.data);
         } else {
-          setMenuItems(dummyData);
+          setMenuItems([]);
         }
       } catch (error) {
-        setMenuItems(dummyData);
+        setMenuItems([]);
       } finally {
         setLoading(false);
       }

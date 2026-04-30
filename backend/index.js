@@ -14,17 +14,17 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+const frontendUrl = process.env.FRONTEND_URL || 'https://the-restaurant-project.vercel.app';
 
 const io = new Server(server, {
   cors: {
-    origin: [frontendUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: [frontendUrl, 'https://the-restaurant-project.vercel.app', 'http://localhost:5173', 'http://127.0.0.1:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
 // Middleware
-app.use(cors({ origin: [frontendUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'] }));
+app.use(cors({ origin: [frontendUrl, 'https://the-restaurant-project.vercel.app', 'http://localhost:5173', 'http://127.0.0.1:5173'] }));
 app.use(express.json());
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

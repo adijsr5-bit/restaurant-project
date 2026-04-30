@@ -5,12 +5,12 @@ export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const defaultSettings = {
-    restaurantName: 'AdityaDine',
+    restaurantName: 'The Fig & Olive',
     logoUrl: '',
     themeColor: '#7b8c5a', // Luxury Olive Green
-    address: '123 Tech Park, Innovation City',
-    contactEmail: 'contact@adityadine.com',
-    contactPhone: '+1 (555) 123-4567',
+    address: '13-15 Castle Street, Douglas, IM1 2EX',
+    contactEmail: 'contact@thefigandolive.com',
+    contactPhone: '01624 626003',
   };
 
   const [settings, setSettings] = useState(defaultSettings);

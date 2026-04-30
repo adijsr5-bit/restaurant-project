@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
+import { X, Trash2, Plus, Minus, CreditCard, CheckCircle } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { BASE_URL } from '../services/api';
 import api from '../services/api';
@@ -145,8 +145,5 @@ const CartPanel = () => {
     </AnimatePresence>
   );
 };
-
-// CheckCircle icon missing from lucide import above
-import { CheckCircle } from 'lucide-react';
 
 export default CartPanel;

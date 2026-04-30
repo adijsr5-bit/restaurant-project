@@ -18,8 +18,8 @@ const Footer = () => {
           </div>
           
           <div className="footer-info">
-            <p className="address">13-15 Castle Street, Douglas, IM1 2EX</p>
-            <p className="phone">Call us: xxxxxx</p>
+            <p className="address">{settings.address}</p>
+            <p className="phone">Call us: {settings.contactPhone}</p>
           </div>
           
           <div className="footer-copyright">

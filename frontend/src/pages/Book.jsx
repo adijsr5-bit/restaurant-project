@@ -8,9 +8,12 @@ const Book = () => {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingData, setBookingData] = useState({
     name: '',
+    email: '',
+    telephone: '',
     date: '',
     time: '',
     guests: '2',
+    specialRequests: '',
   });
 
   const availableTimes = ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
@@ -52,9 +55,10 @@ const Book = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1>Reservations</h1>
+          <h1>Reservation</h1>
           <div className="divider"></div>
-          <p>Join us for an unforgettable experience.</p>
+          <h2>Book your table</h2>
+          <p>Please complete the information below to make a reservation</p>
         </motion.div>
       </div>
 
@@ -86,18 +90,42 @@ const Book = () => {
             >
               <div className="form-row">
                 <div className="form-group">
-                  <label>Full Name</label>
+                  <label>Name (required)</label>
                   <input 
                     type="text" 
                     name="name"
                     required
                     className="input-field luxury-input" 
-                    placeholder="E.g., John Doe"
                     value={bookingData.name}
                     onChange={handleChange}
                   />
                 </div>
                 
+                <div className="form-group">
+                  <label>Email (required)</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    required
+                    className="input-field luxury-input" 
+                    value={bookingData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Telephone</label>
+                  <input 
+                    type="tel" 
+                    name="telephone"
+                    className="input-field luxury-input" 
+                    value={bookingData.telephone}
+                    onChange={handleChange}
+                  />
+                </div>
+
                 <div className="form-group">
                   <label>Number of Guests</label>
                   <select 
@@ -145,6 +173,21 @@ const Book = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="form-group" style={{ marginBottom: '20px' }}>
+                <label>Special Requests</label>
+                <textarea 
+                  name="specialRequests"
+                  className="input-field luxury-input" 
+                  value={bookingData.specialRequests}
+                  onChange={handleChange}
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <p className="booking-notice text-center" style={{ marginBottom: '20px', fontStyle: 'italic', color: '#666' }}>
+                Please be aware that this booking is for The Fig & Olive Isle of Man.
+              </p>
 
               <div className="form-submit text-center">
                 <button type="submit" className="btn-primary" disabled={loading}>
