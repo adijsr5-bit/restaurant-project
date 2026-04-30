@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Utensils, CalendarCheck, Edit, Trash2, CheckCircle, XCircle, UploadCloud, Image as ImageIcon } from 'lucide-react';
+import { Settings, Utensils, CalendarCheck, Edit, Trash2, CheckCircle, XCircle, UploadCloud, Image as ImageIcon, Mail } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 import api, { BASE_URL } from '../services/api';
 import './Admin.css';
@@ -15,6 +15,7 @@ const Admin = () => {
   const [bookings, setBookings] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [homeImages, setHomeImages] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   // Menu Form State
   const [showMenuForm, setShowMenuForm] = useState(false);
@@ -44,16 +45,18 @@ const Admin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [menuRes, orderRes, bookingRes, homeImageRes] = await Promise.all([
+        const [menuRes, orderRes, bookingRes, homeImageRes, msgRes] = await Promise.all([
           api.get('/menu'),
           api.get('/orders'),
           api.get('/bookings'),
-          api.get('/home-images')
+          api.get('/home-images'),
+          api.get('/contact')
         ]);
         if (menuRes.data) setMenuItems(menuRes.data);
         if (orderRes.data) setOrders(orderRes.data);
         if (bookingRes.data) setBookings(bookingRes.data);
         if (homeImageRes.data) setHomeImages(homeImageRes.data);
+        if (msgRes.data) setMessages(msgRes.data);
       } catch (err) {
         if (err.response?.status === 401) {
           localStorage.removeItem('token');
@@ -264,6 +267,15 @@ const Admin = () => {
             onClick={() => setActiveTab('settings')}
           >
             <Settings size={18} /> Store Settings
+          </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'messages' ? 'active' : ''}`}
+            onClick={() => setActiveTab('messages')}
+          >
+            <Mail size={18} /> Messages
+            {messages.filter(m => !m.read).length > 0 && (
+              <span className="badge">{messages.filter(m => !m.read).length}</span>
+            )}
           </button>
         </nav>
       </div>
@@ -687,7 +699,61 @@ const Admin = () => {
                       </td>
                     </tr>
                   ))}
-                  {homeImages.length === 0 && <tr><td colSpan="4" className="text-center py-4">No home images uploaded yet.</td></tr>}
+                  {homeImages.length === 0 && <tr><td colSpan="5" className="text-center py-4">No home images uploaded yet.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        )}
+
+        {/* MESSAGES TAB */}
+        {activeTab === 'messages' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-panel-card">
+            <div className="admin-panel-header">
+              <h2>Contact Messages</h2>
+            </div>
+            <div className="admin-table-wrapper">
+              <table className="admin-clean-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {messages.map(msg => (
+                    <tr key={msg._id} style={{ fontWeight: msg.read ? 'normal' : 'bold' }}>
+                      <td>{new Date(msg.createdAt).toLocaleDateString()}</td>
+                      <td>{msg.name}</td>
+                      <td><a href={`mailto:${msg.email}`} className="text-primary">{msg.email}</a></td>
+                      <td style={{ maxWidth: '300px', whiteSpace: 'pre-wrap' }}>{msg.message}</td>
+                      <td>
+                        {!msg.read ? (
+                          <button 
+                            className="btn-action accept" 
+                            onClick={async () => {
+                              try {
+                                await api.put(`/contact/${msg._id}`, { read: true });
+                                setMessages(messages.map(m => m._id === msg._id ? { ...m, read: true } : m));
+                              } catch (e) {
+                                alert("Failed to mark as read");
+                              }
+                            }}
+                          >
+                            <CheckCircle size={16}/> Mark Read
+                          </button>
+                        ) : (
+                          <span className="text-muted">Read</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {messages.length === 0 && (
+                    <tr><td colSpan="5" className="text-center py-4">No messages received yet.</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>

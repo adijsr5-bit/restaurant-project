@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import api from '../services/api';
 import './Contact.css';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await api.post('/contact', formData);
+      alert('Message sent successfully!');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      alert('Failed to send message.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="contact-page-container">
       <div className="contact-page-header">
@@ -57,20 +74,40 @@ const Contact = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            <form className="contact-form" onSubmit={(e) => { e.preventDefault(); alert("Message sent successfully!"); }}>
+            <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Your Name</label>
-                <input type="text" className="input-field luxury-input" required />
+                <input 
+                  type="text" 
+                  className="input-field luxury-input" 
+                  required 
+                  value={formData.name}
+                  onChange={e => setFormData({...formData, name: e.target.value})}
+                />
               </div>
               <div className="form-group">
                 <label>Email Address</label>
-                <input type="email" className="input-field luxury-input" required />
+                <input 
+                  type="email" 
+                  className="input-field luxury-input" 
+                  required 
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                />
               </div>
               <div className="form-group">
                 <label>Message</label>
-                <textarea className="input-field luxury-input" rows="4" required></textarea>
+                <textarea 
+                  className="input-field luxury-input" 
+                  rows="4" 
+                  required
+                  value={formData.message}
+                  onChange={e => setFormData({...formData, message: e.target.value})}
+                ></textarea>
               </div>
-              <button type="submit" className="btn-primary mt-4">Send Message</button>
+              <button type="submit" className="btn-primary mt-4" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Message'}
+              </button>
             </form>
           </motion.div>
         </div>
